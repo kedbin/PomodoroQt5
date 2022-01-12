@@ -1,9 +1,9 @@
 #!/usr/bin/python3
 import os
 import random
-from PyQt5.QtWidgets import QApplication, QLabel, QVBoxLayout, QWidget, QPushButton, QGridLayout
+from PyQt5.QtWidgets import QApplication, QLabel, QWidget, QPushButton, QGridLayout
 from PyQt5.QtGui import QFont
-from PyQt5.QtCore import QTime, QTimer, Qt
+from PyQt5.QtCore import QTimer, Qt
 
 class AppDemo(QWidget):
     def __init__(self):
@@ -43,7 +43,11 @@ class AppDemo(QWidget):
     def displayTime(self):
         self.resize(self.sizeHint())
         if self.pomodoro == 0:
-            self.lbl.setText(f"Time's Up! This is Pomodoro # {self.counter}")
+            if self.counter % 4 == 0:
+                self.lbl.setText(f"You have completed {self.counter} Pomodoros \
+\n You are given a 30 minute break!")
+            else:
+                self.lbl.setText(f"Time's Up! This is Pomodoro # {self.counter}")
             if self.Reward == 1:
                 file = [f for f in os.listdir("Reward") if os.path.isfile(f"Reward/{f}")]
                 file = random.choice(file)
