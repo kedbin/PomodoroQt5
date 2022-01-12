@@ -1,5 +1,6 @@
 #!/usr/bin/python3
 import os
+import random
 from PyQt5.QtWidgets import QApplication, QLabel, QVBoxLayout, QWidget, QPushButton, QGridLayout
 from PyQt5.QtGui import QFont
 from PyQt5.QtCore import QTime, QTimer, Qt
@@ -7,7 +8,6 @@ from PyQt5.QtCore import QTime, QTimer, Qt
 class AppDemo(QWidget):
     def __init__(self):
         super().__init__()
-        self.resize(450,150)
         self.setWindowTitle("Kedbin's Pomodoro App")
 
         self.counter = 0
@@ -18,11 +18,12 @@ class AppDemo(QWidget):
 
         self.layout = QGridLayout()
 
-        fnt = QFont('Helvetica', 120)
+        fnt = QFont('Helvetica', 20)
 
         self.lbl = QLabel()
         self.lbl.setFont(fnt)
         self.lbl.setAlignment(Qt.AlignCenter)
+        self.lbl.setText(f"Pomodoro App!")
 
         self.layout.addWidget(self.lbl,0,0,1,2)
         self.layout.addWidget(self.startBtn,1,0)
@@ -37,13 +38,30 @@ class AppDemo(QWidget):
         self.endBtn.clicked.connect(self.endTimer)
         self.breakBtn.clicked.connect(self.breakTimer)
 
+        self.prevReward = ""
+
     def displayTime(self):
+        self.resize(self.sizeHint())
         if self.pomodoro == 0:
-            self.lbl.setText("Time's Up!")
-            os.system("vlc ./kubo8.mp4 > /dev/null 2>&1 &")
+            self.lbl.setText(f"Time's Up! This is Pomodoro # {self.counter}")
+            if self.Reward == 1:
+                file = [f for f in os.listdir("Reward") if os.path.isfile(f"Reward/{f}")]
+                file = random.choice(file)
+                while self.prevReward == file:
+                    file = random.choice
+                vlcCommand = f"Reward/\"{file}\" vlc://quit"
+                self.prevReward = file
+                self.Reward = 0
+            elif self.Restart == 1:
+                file = [f for f in os.listdir("Restart") if os.path.isfile(f"Restart/{f}")]
+                file = random.choice(file)
+                vlcCommand = f"Restart/\"{file}\" -L -f"
+                self.Restart = 0
+            os.system(f"vlc {vlcCommand} > /dev/null 2>&1 &")
             self.layout.addWidget(self.breakBtn,2,0,1,2)
             self.startBtn.setEnabled(True)
             self.breakBtn.setEnabled(True)
+            self.endBtn.setEnabled(False)
             self.timer.stop()
             return
         mins = int(self.pomodoro // 60)
@@ -56,12 +74,13 @@ class AppDemo(QWidget):
         self.pomodoro -=1
     
     def startTimer(self):
-        self.pomodoro = 0.1*60
+        self.pomodoro = 25*60
         self.timer.start(1000)
         self.startBtn.setEnabled(False)
         self.endBtn.setEnabled(True)
         self.breakBtn.setEnabled(False)
         self.counter += 1
+        self.Reward = 1
 
     def endTimer(self):
         self.timer.stop()
@@ -72,10 +91,11 @@ class AppDemo(QWidget):
         if self.counter > 0 and self.counter % 4 == 0:
             self.pomodoro = 30*60
         else:
-            self.pomodoro = 0.15*60
+            self.pomodoro = 5*60
         self.timer.start(1000)
         self.startBtn.setEnabled(False)
         self.breakBtn.setEnabled(False)
+        self.Restart = 1
 
 
 
