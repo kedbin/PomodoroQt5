@@ -8,6 +8,7 @@ from PyQt5.QtCore import QTimer, Qt
 class AppDemo(QWidget):
     def __init__(self):
         super().__init__()
+        self.currentDir = os.getcwd()
         self.setWindowTitle("Kedbin's Pomodoro App")
 
         self.counter = 0
@@ -28,7 +29,7 @@ class AppDemo(QWidget):
         self.layout.addWidget(self.lbl,0,0,1,2)
         self.layout.addWidget(self.startBtn,1,0)
         self.layout.addWidget(self.endBtn,1,1)
-        
+
         self.setLayout(self.layout)
 
         self.timer = QTimer()
@@ -49,17 +50,17 @@ class AppDemo(QWidget):
             else:
                 self.lbl.setText(f"Time's Up! This is Pomodoro # {self.counter}")
             if self.Reward == 1:
-                file = [f for f in os.listdir("Reward") if os.path.isfile(f"Reward/{f}")]
+                file = [f for f in os.listdir(f"{self.currentDir}/Reward") if os.path.isfile(f"{self.currentDir}/Reward/{f}")]
                 file = random.choice(file)
                 while self.prevReward == file:
                     file = random.choice
-                vlcCommand = f"Reward/\"{file}\" vlc://quit"
+                vlcCommand = f"{self.currentDir}/Reward/\"{file}\" vlc://quit"
                 self.prevReward = file
                 self.Reward = 0
             elif self.Restart == 1:
-                file = [f for f in os.listdir("Restart") if os.path.isfile(f"Restart/{f}")]
+                file = [f for f in os.listdir(f"{self.currentDir}/Restart") if os.path.isfile(f"{self.currentDir}/Restart/{f}")]
                 file = random.choice(file)
-                vlcCommand = f"Restart/\"{file}\" -L -f"
+                vlcCommand = f"{self.currentDir}/Restart/\"{file}\" -L -f"
                 self.Restart = 0
             os.system(f"vlc {vlcCommand} > /dev/null 2>&1 &")
             self.layout.addWidget(self.breakBtn,2,0,1,2)
@@ -76,9 +77,10 @@ class AppDemo(QWidget):
         self.lbl.setText(displayText)
 
         self.pomodoro -=1
-    
+
     def startTimer(self):
-        self.pomodoro = 25*60
+        self.setWindowOpacity(1) 
+        self.pomodoro = 0.1*60
         self.timer.start(1000)
         self.startBtn.setEnabled(False)
         self.endBtn.setEnabled(True)
@@ -95,7 +97,7 @@ class AppDemo(QWidget):
         if self.counter > 0 and self.counter % 4 == 0:
             self.pomodoro = 30*60
         else:
-            self.pomodoro = 5*60
+            self.pomodoro = 0.1*60
         self.timer.start(1000)
         self.startBtn.setEnabled(False)
         self.breakBtn.setEnabled(False)
