@@ -80,7 +80,7 @@ class AppDemo(QWidget):
 
     def startTimer(self):
         self.setWindowOpacity(1) 
-        self.pomodoro = 0.1*60
+        self.pomodoro = 25*60
         self.timer.start(1000)
         self.startBtn.setEnabled(False)
         self.endBtn.setEnabled(True)
@@ -97,7 +97,7 @@ class AppDemo(QWidget):
         if self.counter > 0 and self.counter % 4 == 0:
             self.pomodoro = 30*60
         else:
-            self.pomodoro = 0.1*60
+            self.pomodoro = 5*60
         self.timer.start(1000)
         self.startBtn.setEnabled(False)
         self.breakBtn.setEnabled(False)
